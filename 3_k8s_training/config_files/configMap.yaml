@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lab5-configmap
+data:
+  # Ports
+  port: "80"
+  target_port: "5432"
+  node_port: "30001"

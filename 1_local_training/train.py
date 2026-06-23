@@ -43,7 +43,7 @@ def main():
         pickle.dump({
             'coef_': model.coef_,
             'intercept_': model.intercept_,
-            'poly_degree': 2,
+            'poly_degree': 5,
             'poly_features': poly_features
         }, f)
     

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: lab5-app
+  labels:
+    app: lab5-app
+spec:
+  serviceName: lab5-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lab5-app
+  template:
+    metadata:
+      labels:
+        app: lab5-app
+    spec:
+      containers:
+        - name: lab5-app
+          image: jackyang01/lab5test:latest
+          # command: ["sh", "-c", "while true; do echo 'Hello from my-pod!' >> /data/my-file.txt; sleep 5; done"]
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: lab5-secret
+          volumeMounts:
+            - name: my-volume-lab5
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: my-volume-lab5 # This name MUST match the volumeMount name
+          persistentVolumeClaim:
+            claimName: my-pvc-lab5 # This must match the PVC name

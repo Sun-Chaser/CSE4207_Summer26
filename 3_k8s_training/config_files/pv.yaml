@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv-lab5
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce # Only one Pod can use this at a time
+  persistentVolumeReclaimPolicy: Retain # Keep the data even if the PVC is deleted
+  storageClassName: manual
+  # For demo ONLY - DO NOT USE IN PRODUCTION
+  hostPath:
+    path: /data/my-pv-data
+    type: DirectoryOrCreate
+
