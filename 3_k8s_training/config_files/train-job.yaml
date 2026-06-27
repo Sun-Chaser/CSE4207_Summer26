@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: train-job
+  namespace: default
+  labels:
+    app: ml-app
+spec:
+  backoffLimit: 4
+  activeDeadlineSeconds: 600
+  completions: 1
+  parallelism: 1
+  ttlSecondsAfterFinished: 100
+
+  template:
+    metadata:
+      labels:
+        app: ml-app
+    spec:
+      restartPolicy: OnFailure
+
+      containers:
+        - name: worker
+          image: jackyang01/ml-pipeline:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python3", "train.py", "train.csv", "/models/trained_model.pkl"]
+
+          envFrom:
+            - secretRef:
+                name: ml-secret
+
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+
+          volumeMounts:
+            - name: model-storage
+              mountPath: /models
+
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+
+      volumes:
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: my-pvc-ml

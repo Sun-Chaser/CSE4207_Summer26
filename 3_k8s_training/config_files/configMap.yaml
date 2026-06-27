@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: lab5-configmap
+  name: mla-configmap
 data:
   # Ports
   port: "80"

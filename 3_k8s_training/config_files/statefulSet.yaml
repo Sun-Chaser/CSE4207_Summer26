@@ -1,33 +1,36 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: lab5-app
+  name: ml-app
   labels:
-    app: lab5-app
+    app: ml-app
 spec:
-  serviceName: lab5-service
+  serviceName: ml-service
   replicas: 1
   selector:
     matchLabels:
-      app: lab5-app
+      app: ml-app
   template:
     metadata:
       labels:
-        app: lab5-app
+        app: ml-app
     spec:
       containers:
-        - name: lab5-app
-          image: jackyang01/lab5test:latest
+        - name: ml-app
+          image: jackyang01/ml-pipeline:latest
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c"]
+          args: ["echo 'model registry pod running'; sleep infinity"]
           # command: ["sh", "-c", "while true; do echo 'Hello from my-pod!' >> /data/my-file.txt; sleep 5; done"]
           ports:
             - containerPort: 5432
           envFrom:
             - secretRef:
-                name: lab5-secret
+                name: ml-secret
           volumeMounts:
-            - name: my-volume-lab5
-              mountPath: /var/lib/postgresql/data
+            - name: my-volume-ml
+              mountPath: /models
       volumes:
-        - name: my-volume-lab5 # This name MUST match the volumeMount name
+        - name: my-volume-ml # This name MUST match the volumeMount name
           persistentVolumeClaim:
-            claimName: my-pvc-lab5 # This must match the PVC name
+            claimName: my-pvc-ml # This must match the PVC name

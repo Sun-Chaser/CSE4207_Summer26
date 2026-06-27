@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: infer-job
+  namespace: default
+  labels:
+    app: ml-app
+spec:
+  # --- Job Behavior Configuration ---
+  backoffLimit: 4               # Number of retries before marking the job as failed
+  activeDeadlineSeconds: 600    # Maximum duration the job can run (10 minutes)
+  completions: 1                # Total number of successful pods required to finish
+  parallelism: 1                # Number of pods allowed to run concurrently
+  ttlSecondsAfterFinished: 100  # Automatically cleans up/deletes the job after it ends
+
+  template:
+    metadata:
+      labels:
+        app: ml-app
+    spec:
+      # --- Pod Runtime Configuration ---
+      restartPolicy: OnFailure      # Must be 'Never' or 'OnFailure' for Jobs
+      containers:
+        - name: worker
+          image: jackyang01/ml-pipeline:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python3", "infer.py", "/models/trained_model.pkl", "test.csv", "/models/prediction.json"]
+
+          envFrom:
+            - secretRef:
+                name: ml-secret
+
+          volumeMounts:
+            - name: model-storage
+              mountPath: /models
+        
+          # --- Optional Resource Limits ---
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
+      volumes:
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: my-pvc-ml
