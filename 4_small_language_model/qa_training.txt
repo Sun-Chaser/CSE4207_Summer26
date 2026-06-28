@@ -1,0 +1,17 @@
+Question: What is cloud computing?
+Answer: Cloud computing is the use of remote servers to store, process, and manage data over the internet.
+
+Question: What is Docker?
+Answer: Docker is a tool that packages code and dependencies into containers so applications can run consistently across environments.
+
+Question: What is Kubernetes?
+Answer: Kubernetes is a container orchestration system that manages, schedules, and restarts containers across a cluster.
+
+Question: What is a Kubernetes Job?
+Answer: A Kubernetes Job runs a task until it completes successfully, making it useful for batch workloads such as model training.
+
+Question: What is a Persistent Volume?
+Answer: A Persistent Volume is storage in Kubernetes that can survive pod deletion and be reused by new pods.
+
+Question: Why use S3 in a cloud machine learning pipeline?
+Answer: S3 can store training data, inference inputs, model artifacts, and prediction outputs in a durable cloud object store.

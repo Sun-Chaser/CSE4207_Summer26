@@ -1,0 +1,3 @@
+Cloud computing allows applications to scale by using remote servers, containers, and orchestration tools.
+Kubernetes helps manage containers by creating pods, jobs, deployments, and persistent volumes.
+A cloud machine learning pipeline can use object storage for data, Kubernetes Jobs for training, and persistent volumes for model storage.
