@@ -1,0 +1,31 @@
+# Persistent Volume 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv-slm
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce # Only one Pod can use this at a time
+  persistentVolumeReclaimPolicy: Retain # Keep the data even if the PVC is deleted
+  storageClassName: manual
+  # For demo ONLY - DO NOT USE IN PRODUCTION
+  hostPath:
+    path: /mnt/data
+    type: DirectoryOrCreate
+
+---
+# Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc-slm
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 2Gi
+

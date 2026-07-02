@@ -1,0 +1,71 @@
+# CONFIG MAP
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: slm-configmap
+data:
+  # Pro-tip: Since this is an internal database service, you don't need NodePort.
+  # Your Inference/Fine-tuning workers can find this database using "slm-service:5432"
+  DB_PORT: "5432"
+
+---
+# DATABASE SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: slm-service
+  labels:
+    app: slm-app
+spec:
+  # Changed from ClusterIP to None to make it a Headless Service.
+  # This is crucial for StatefulSets so K8s can give the pod a stable network name (slm-app-0)
+  clusterIP: None
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: slm-app
+
+---
+# STATEFUL SET
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: slm-app
+  labels:
+    app: slm-app
+spec:
+  serviceName: slm-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slm-app
+  template:
+    metadata:
+      labels:
+        app: slm-app
+    spec:
+      securityContext:
+        runAsUser: 999  
+        fsGroup: 999    
+      containers:
+        - name: slm-app
+          image: jackyang01/sql:latest
+          ports:
+            - containerPort: 5432
+          env:
+            # Tell Postgres to initialize inside a subfolder rather than the raw mount root
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          envFrom:
+            - secretRef:
+                name: slm-secret
+            - configMapRef:   # Added this so your container actually reads the configmap data!
+                name: slm-configmap
+          volumeMounts:
+            - name: my-volume-slm
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: my-volume-slm 
+          persistentVolumeClaim:
+            claimName: my-pvc-slm

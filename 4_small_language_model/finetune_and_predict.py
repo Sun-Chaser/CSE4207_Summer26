@@ -61,6 +61,8 @@ def fine_tune_model(
 
     model = AutoModelForCausalLM.from_pretrained(model_name)
 
+    model.config.loss_type = "ForCausalLMLoss"
+
     dataset = TextFileDataset(
         text=text,
         tokenizer=tokenizer,
