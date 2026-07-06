@@ -1,8 +1,8 @@
-# Persistent Volume 
+# PostgreSQL Persistent Volume
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: my-pv-slm
+  name: my-pv-slm-db
 spec:
   capacity:
     storage: 2Gi
@@ -12,15 +12,15 @@ spec:
   storageClassName: manual
   # For demo ONLY - DO NOT USE IN PRODUCTION
   hostPath:
-    path: /mnt/data
+    path: /mnt/slm-postgres
     type: DirectoryOrCreate
 
 ---
-# Persistent Volume Claim
+# PostgreSQL Persistent Volume Claim
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: my-pvc-slm
+  name: my-pvc-slm-db
 spec:
   accessModes:
     - ReadWriteOnce
@@ -29,3 +29,34 @@ spec:
     requests:
       storage: 2Gi
 
+---
+# Model Persistent Volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv-slm-models
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  # For demo ONLY - DO NOT USE IN PRODUCTION
+  hostPath:
+    path: /mnt/slm-models
+    type: DirectoryOrCreate
+
+---
+# Model Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc-slm-models
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 2Gi

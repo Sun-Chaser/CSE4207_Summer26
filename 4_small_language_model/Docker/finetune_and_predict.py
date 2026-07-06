@@ -6,9 +6,6 @@ import torch
 from torch.utils.data import Dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-access_token = os.environ.get("MY_TOKEN")
-os.environ["HF_TOKEN"] = str(access_token)
-
 class TextFileDataset(Dataset):
     def __init__(self, text, tokenizer, block_size=64):
         tokens = tokenizer(
