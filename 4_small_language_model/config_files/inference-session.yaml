@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inference-pod
+  namespace: default
+  labels:
+    app: slm-inference
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slm-inference
+  template:
+    metadata:
+      labels:
+        app: slm-inference
+    spec:
+      # --- Pod Runtime Configuration ---
+      containers:
+        - name: worker
+          image: jackyang01/slm-jobs:latest
+          imagePullPolicy: Always
+          stdin: true
+          tty: true
+          command: ["sleep", "infinity"]
+
+          envFrom:
+            - secretRef:
+                name: slm-secret
+            - configMapRef:
+                name: slm-configmap
+
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+
+          volumeMounts:
+            - name: model-storage
+              mountPath: /models
+
+          resources:
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+            requests:
+              cpu: "500m"
+              memory: "2Gi"
+
+      volumes:
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: my-pvc-slm-models

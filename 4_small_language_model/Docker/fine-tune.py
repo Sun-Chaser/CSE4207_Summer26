@@ -7,6 +7,8 @@ from pathlib import Path
 # Amazon S3
 import boto3
 from botocore.exceptions import ClientError
+
+# SQL Database
 import psycopg2
 from psycopg2.extras import Json
 
