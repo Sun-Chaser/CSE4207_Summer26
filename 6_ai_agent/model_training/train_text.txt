@@ -1,0 +1,288 @@
+Prompt: Help me train the model from the file train.txt with 3 epoches and store at abc.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "fine-tune",
+        "cmd": "[\"python3\", \"fine-tune.py\", \"--dataset_location\", \"train.txt\", \"--model_storage_location\", \"/models/abc\", \"--epochs\", \"3\"]"
+    }
+}
+
+Prompt: Help me train the model from the file ok.txt and store at bcd.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "fine-tune",
+        "cmd": "[\"python3\", \"fine-tune.py\", \"--dataset_location\", \"ok.txt\", \"--model_storage_location\", \"/models/bcd\"]"
+    }
+}
+
+Prompt: Submit a fine-tuned job to read from the file ok.txt and store the model at fde.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "fine-tune",
+        "cmd": "[\"python3\", \"fine-tune.py\", \"--dataset_location\", \"ok.txt\", \"--model_storage_location\", \"/models/fde\"]"
+    }
+}
+
+Prompt: Run a fine-tuning task using data.csv, save it to model_v1, and run for 5 epochs.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "fine-tune",
+        "cmd": "[\"python3\", \"fine-tune.py\", \"--dataset_location\", \"data.csv\", \"--model_storage_location\", \"/models/model_v1\", \"--epochs\", \"5\"]"
+    }
+}
+
+Prompt: Please fine tune a model. The dataset is input.json and I want to save the output to my_model.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "fine-tune",
+        "cmd": "[\"python3\", \"fine-tune.py\", \"--dataset_location\", \"input.json\", \"--model_storage_location\", \"/models/my_model\"]"
+    }
+}
+
+Prompt: Kick off training with logs.parquet. Output path should be experimental_run. Do 12 epochs.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "fine-tune",
+        "cmd": "[\"python3\", \"fine-tune.py\", \"--dataset_location\", \"logs.parquet\", \"--model_storage_location\", \"/models/experimental_run\", \"--epochs\", \"12\"]"
+    }
+}
+
+Prompt: Execute fine tuning using dataset final_corpus.tsv. Save it under production_v4.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "fine-tune",
+        "cmd": "[\"python3\", \"fine-tune.py\", \"--dataset_location\", \"final_corpus.tsv\", \"--model_storage_location\", \"/models/production_v4\"]"
+    }
+}
+
+Prompt: Start a training session. Use corpus.txt. Store the weights at checkpoints/step1.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "fine-tune",
+        "cmd": "[\"python3\", \"fine-tune.py\", \"--dataset_location\", \"corpus.txt\", \"--model_storage_location\", \"/models/checkpoints/step1\"]"
+    }
+}
+
+Prompt: Tune the model using /shared/data/clean.csv and save the final architecture to model_output_2026.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "fine-tune",
+        "cmd": "[\"python3\", \"fine-tune.py\", \"--dataset_location\", \"/shared/data/clean.csv\", \"--model_storage_location\", \"/models/model_output_2026\"]"
+    }
+}
+
+Prompt: I need to fine-tune a model. Set epochs to 1. The data file is mini_sample.txt. Save location is scratch_model.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "fine-tune",
+        "cmd": "[\"python3\", \"fine-tune.py\", \"--dataset_location\", \"mini_sample.txt\", \"--model_storage_location\", \"/models/scratch_model\", \"--epochs\", \"1\"]"
+    }
+}
+
+Prompt: Infer from the model abc and answer this question: What is your question?
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "one-time-prediction",
+        "cmd": "[\"python3\", \"one-time-predic.py\", \"--model_location\", \"/models/abc\", \"--question\", \"What is your question?\"]"
+    }
+}
+
+Prompt: Predict using model v2: How does photosynthesis work?
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "one-time-prediction",
+        "cmd": "[\"python3\", \"one-time-predic.py\", \"--model_location\", \"/models/v2\", \"--question\", \"How does photosynthesis work?\"]"
+    }
+}
+
+Prompt: Ask the model called llama_weights this question: What is 2+2?
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "one-time-prediction",
+        "cmd": "[\"python3\", \"one-time-predic.py\", \"--model_location\", \"/models/llama_weights\", \"--question\", \"What is 2+2?\"]"
+    }
+}
+
+Prompt: Run inference on model_b. Question: Explain quantum computing like I am five years old.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "one-time-prediction",
+        "cmd": "[\"python3\", \"one-time-predic.py\", \"--model_location\", \"/models/model_b\", \"--question\", \"Explain quantum computing like I am five years old.\"]"
+    }
+}
+
+Prompt: Query the model at /models/finance_v1 with the query: What was Apple's revenue growth last quarter?
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "one-time-prediction",
+        "cmd": "[\"python3\", \"one-time-predic.py\", \"--model_location\", \"/models/finance_v1\", \"--question\", \"What was Apple's revenue growth last quarter?\"]"
+    }
+}
+
+Prompt: Get a prediction from model_alpha. Prompt: Tell me a joke about programming.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "one-time-prediction",
+        "cmd": "[\"python3\", \"one-time-predic.py\", \"--model_location\", \"/models/model_alpha\", \"--question\", \"Tell me a joke about programming.\"]"
+    }
+}
+
+Prompt: Test the model residing at fine_tuned_gpt. Ask it: Translate 'hello' to French.
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "one-time-prediction",
+        "cmd": "[\"python3\", \"one-time-predic.py\", \"--model_location\", \"/models/fine_tuned_gpt\", \"--question\", \"Translate 'hello' to French.\"]"
+    }
+}
+
+Prompt: Evaluate using model chatbot_v3. The user query is: Why is the sky blue?
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "one-time-prediction",
+        "cmd": "[\"python3\", \"one-time-predic.py\", \"--model_location\", \"/models/chatbot_v3\", \"--question\", \"Why is the sky blue?\"]"
+    }
+}
+
+Prompt: Generate a response from model historical_bot. Question: Who was the first emperor of Rome?
+Response:
+{
+    "status": "Valid",
+    "payload": {
+        "job": "one-time-prediction",
+        "cmd": "[\"python3\", \"one-time-predic.py\", \"--model_location\", \"/models/historical_bot\", \"--question\", \"Who was the first emperor of Rome?\"]"
+    }
+}
+
+Prompt: Submit a train job
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The dataset_location and model_storage_location are not provided."
+    }
+}
+
+Prompt: Submit a train job and store the tuned model at bcd
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The dataset_location is not provided."
+    }
+}
+
+Prompt: Train a new model using dataset text.txt
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The model_storage_location is not provided."
+    }
+}
+
+Prompt: Please run a fine-tune command for 4 epochs but don't specify any files.
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The dataset_location and model_storage_location are not provided."
+    }
+}
+
+Prompt: Fine tune a model using dataset database.db
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The model_storage_location is not provided."
+    }
+}
+
+Prompt: Save my trained model to output_dir
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The dataset_location is not provided."
+    }
+}
+
+Prompt: Can you run an inference for me? The question is "Who wrote Hamlet?"
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The model_location is not provided."
+    }
+}
+
+Prompt: Use model_xyz to predict something.
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The question is not provided."
+    }
+}
+
+Prompt: Ask the system: What time does the store close?
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The model_location is not provided."
+    }
+}
+
+Prompt: Hello, how are you today?
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The request intent could not be identified as fine-tune or one-time-prediction."
+    }
+}
+
+Prompt: Clear the server cache and reboot the system.
+Response:
+{
+    "status": "Invalid",
+    "payload": {
+        "message": "The request intent could not be identified as fine-tune or one-time-prediction."
+    }
+}

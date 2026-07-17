@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-agent-deployment
+  labels:
+    app: ai-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-agent
+  # --- START OF POD TEMPLATE ---
+  template:
+    metadata:
+      labels:
+        app: ai-agent
+    spec:
+      containers:
+      - name: ai-agent
+        image: python:3.12
+        command: ["/bin/sh", "-c", "tail -f /dev/null"]
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+
+        envFrom:
+            - secretRef:
+                name: slm-secret
+            - configMapRef:
+                name: slm-configmap
+
+        env:
+          - name: PYTHONUNBUFFERED
+            value: "1"
+
+        volumeMounts:
+          - name: model-storage
+            mountPath: /models
+
+        # Resource allocations protect node health
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: my-pvc-slm-models
+
+  # --- END OF POD TEMPLATE ---

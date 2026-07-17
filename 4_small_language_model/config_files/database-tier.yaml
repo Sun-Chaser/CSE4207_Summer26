@@ -15,35 +15,35 @@ kind: Service
 metadata:
   name: slm-service
   labels:
-    app: slm-app
+    app: slm-database
 spec:
   # Changed from ClusterIP to None to make it a Headless Service.
-  # This is crucial for StatefulSets so K8s can give the pod a stable network name (slm-app-0)
+  # This is crucial for StatefulSets so K8s can give the pod a stable network name (slm-database-0)
   clusterIP: None
   ports:
     - port: 5432
       targetPort: 5432
   selector:
-    app: slm-app
+    app: slm-database
 
 ---
 # STATEFUL SET
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: slm-app
+  name: slm-database
   labels:
-    app: slm-app
+    app: slm-database
 spec:
   serviceName: slm-service
   replicas: 1
   selector:
     matchLabels:
-      app: slm-app
+      app: slm-database
   template:
     metadata:
       labels:
-        app: slm-app
+        app: slm-database
     spec:
       securityContext:
         runAsUser: 999  
@@ -58,7 +58,7 @@ spec:
       #       - name: my-volume-slm
       #         mountPath: /var/lib/postgresql/data
       containers:
-        - name: slm-app
+        - name: slm-database
           image: jackyang01/sql:latest
           ports:
             - containerPort: 5432
