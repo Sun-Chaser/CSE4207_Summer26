@@ -1,38 +1,33 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: train-job
+  name: inference-job
   namespace: default
   labels:
-    app: slm-fine-tune
+    app: slm-one-time-predict
 spec:
   template:
     metadata:
       labels:
-        app: slm-fine-tune
+        app: slm-one-time-predict
     spec:
-      # --- Pod Runtime Configuration ---
-      restartPolicy: OnFailure      # Must be 'Never' or 'OnFailure' for Jobs
+      restartPolicy: OnFailure
       containers:
         - name: worker
           image: jackyang01/slm-jobs:latest
           imagePullPolicy: Always
-          command: ["python3", "fine-tune.py", "--dataset_location", "qa_training.txt", "--model_storage_location", "/models/test"]
-
+          command: ["python3", "one-time-predict.py"]
           envFrom:
             - secretRef:
                 name: slm-secret
             - configMapRef:
                 name: slm-configmap
-
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
-
           volumeMounts:
             - name: model-storage
               mountPath: /models
-
           resources:
             limits:
               cpu: "2"
@@ -40,7 +35,6 @@ spec:
             requests:
               cpu: "500m"
               memory: "2Gi"
-
       volumes:
         - name: model-storage
           persistentVolumeClaim:

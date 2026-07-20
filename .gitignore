@@ -1,8 +1,4 @@
-.venv
+.venv*
 .env
-.venv2
-.venv3
-.venv6
-3_k8s_training/config_files/secret.yaml
 secret.yaml
 models

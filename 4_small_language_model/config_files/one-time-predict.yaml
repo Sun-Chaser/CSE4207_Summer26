@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: train-job
+  name: inference-job
   namespace: default
   labels:
     app: slm-fine-tune
@@ -17,7 +17,7 @@ spec:
         - name: worker
           image: jackyang01/slm-jobs:latest
           imagePullPolicy: Always
-          command: ["python3", "fine-tune.py", "--dataset_location", "qa_training.txt", "--model_storage_location", "/models/test"]
+          command: ["python3", "one-time-predict.py", "--model_location", "/models/test", "--question", "Hello, how are you?"]
 
           envFrom:
             - secretRef:

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-agent-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-agent-app
+  template:
+    metadata:
+      labels:
+        app: ai-agent-app
+    spec:
+      serviceAccountName: ai-agent-app
+      containers:
+        - name: app
+          image: jackyang01/ai-agent-app:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: AI_AGENT_API_URL
+              value: http://host.minikube.internal:8000
+            - name: JOB_TEMPLATE_DIR
+              value: /app/job_templates
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-agent-app
+spec:
+  type: ClusterIP
+  selector:
+    app: ai-agent-app
+  ports:
+    - port: 8080
+      targetPort: http

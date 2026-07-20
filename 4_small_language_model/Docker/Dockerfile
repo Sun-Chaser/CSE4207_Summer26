@@ -6,8 +6,6 @@ ENV HF_HOME=/opt/huggingface \
     HF_HUB_CACHE=/opt/huggingface/hub \
     TRANSFORMERS_CACHE=/opt/huggingface/transformers
 
-# WORKDIR /app
-
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
