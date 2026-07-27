@@ -1,0 +1,6 @@
+fastapi
+httpx
+kubernetes==33.1.0
+pydantic
+PyYAML
+uvicorn[standard]

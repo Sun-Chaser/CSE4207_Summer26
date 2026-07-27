@@ -109,7 +109,8 @@ def main():
             payload={"error": "The model path does not exisit.", "message": "Prediction session exited."},
         )
 
-    answer_question(model_path, args.question)
+    answer = answer_question(model_path, args.question)
+    print(f"Answer: {answer}")
 
 
 if __name__ == "__main__":

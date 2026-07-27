@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slm-job-submitter
+  namespace: default
+  labels:
+    app: slm-job-submitter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slm-job-submitter
+  template:
+    metadata:
+      labels:
+        app: slm-job-submitter
+    spec:
+      # Defined in rbac.yaml and authorized to create batch Jobs.
+      serviceAccountName: slm-job-submitter
+      containers:
+        - name: app
+          image: jackyang01/slm-api:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: JOB_TEMPLATE_DIR
+              value: /app/job_templates
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: JOB_WAIT_TIMEOUT_SECONDS
+              value: "1800"
+            - name: JOB_POLL_INTERVAL_SECONDS
+              value: "2"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: slm-job-submitter
+  namespace: default
+  labels:
+    app: slm-job-submitter
+spec:
+  type: ClusterIP
+  selector:
+    app: slm-job-submitter
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP

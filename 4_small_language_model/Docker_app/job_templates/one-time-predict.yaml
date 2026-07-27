@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: inference-job
+  namespace: default
+  labels:
+    app: slm-one-time-predict
+spec:
+  backoffLimit: 3 
+  template:
+    metadata:
+      labels:
+        app: slm-one-time-predict
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: worker
+          image: jackyang01/slm-jobs:latest
+          imagePullPolicy: Always
+          command: ["python3", "one-time-predict.py"]
+          envFrom:
+            - secretRef:
+                name: slm-secret
+            - configMapRef:
+                name: slm-configmap
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+          volumeMounts:
+            - name: model-storage
+              mountPath: /models
+          resources:
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+            requests:
+              cpu: "500m"
+              memory: "2Gi"
+      volumes:
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: my-pvc-slm-models
