@@ -48,15 +48,6 @@ spec:
       securityContext:
         runAsUser: 999  
         fsGroup: 999    
-      # initContainers:
-      #   - name: fix-postgres-volume-permissions
-      #     image: busybox:1.36
-      #     command: ["sh", "-c", "mkdir -p /var/lib/postgresql/data/pgdata && chown -R 999:999 /var/lib/postgresql/data && chmod 700 /var/lib/postgresql/data/pgdata"]
-      #     securityContext:
-      #       runAsUser: 0
-      #     volumeMounts:
-      #       - name: my-volume-slm
-      #         mountPath: /var/lib/postgresql/data
       containers:
         - name: slm-database
           image: jackyang01/sql:latest

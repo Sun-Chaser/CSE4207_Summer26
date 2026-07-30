@@ -1,0 +1,149 @@
+Question: What is cloud computing?
+Answer: Cloud computing is the use of remote servers hosted on the internet to store, process, and manage data rather than relying on local servers or personal computers[cite: 1].
+
+Question: What are the three primary cloud service models?
+Answer: The three main models are Infrastructure as a Service (IaaS), Platform as a Service (PaaS), and Software as a Service (SaaS).
+
+Question: What is Amazon EC2?
+Answer: Amazon EC2 (Elastic Compute Cloud) is an AWS service that provides resizable virtual servers (instances) to run applications in the cloud[cite: 230].
+
+Question: What is Amazon S3?
+Answer: Amazon S3 (Simple Storage Service) is an object storage service designed to store and retrieve data durably from anywhere on the web[cite: 6, 232].
+
+Question: Why use S3 in a cloud machine learning pipeline?
+Answer: S3 can durably store training data, inference inputs, model artifacts, and prediction outputs across pipeline stages[cite: 6].
+
+Question: What is AWS IAM?
+Answer: AWS Identity and Access Management (IAM) is a service that helps administrators securely control access to AWS resources using roles, policies, and permissions[cite: 246, 247, 252].
+
+Question: What is an IAM Role in AWS?
+Answer: An IAM Role is an identity with specific permissions that AWS services (such as an EC2 instance) can temporarily assume to access other AWS resources without hardcoding credentials[cite: 247, 252].
+
+Question: What is a Security Group in AWS?
+Answer: A Security Group acts as a virtual firewall for an EC2 instance, controlling inbound and outbound network traffic based on specified port and IP rules[cite: 239, 242, 243].
+
+Question: What is Docker?
+Answer: Docker is a tool that packages code, runtimes, system tools, and dependencies into isolated containers so applications run consistently across environments[cite: 2, 307].
+
+Question: What is a Docker container?
+Answer: A Docker container is a lightweight, executable package containing everything needed to run an application independently of the host operating system[cite: 307].
+
+Question: What is a Dockerfile?
+Answer: A Dockerfile is a text script containing instructions used to automate the building of a Docker container image[cite: 75, 318].
+
+Question: What is the purpose of the FROM instruction in a Dockerfile?
+Answer: The FROM instruction sets the base image (such as python:3) upon which subsequent container layers are built[cite: 319, 320].
+
+Question: What is the purpose of the COPY instruction in a Dockerfile?
+Answer: The COPY instruction transfers files or directories from the host computer's local filesystem into the container's filesystem[cite: 320].
+
+Question: What is the difference between RUN and CMD in a Dockerfile?
+Answer: RUN executes commands to build the image (such as installing dependencies), while CMD specifies the default command executed when the container starts[cite: 320, 321].
+
+Question: What is Docker Hub?
+Answer: Docker Hub is a public, cloud-based registry for sharing, storing, and pulling container images[cite: 75, 312].
+
+Question: Why should environment variables not be hardcoded in container images?
+Answer: Hardcoding secrets into images exposes sensitive access keys when images are pushed to registries like Docker Hub[cite: 204, 336].
+
+Question: How does the --env-file flag work in Docker?
+Answer: The --env-file flag passes an external text file containing key-value pairs into a running container at launch, injecting configuration safely without baking it into the image[cite: 338, 342].
+
+Question: What is port mapping in Docker?
+Answer: Port mapping binds a port on the host machine to a container's internal port, allowing external network traffic to reach the application inside[cite: 348, 349].
+
+Question: What is Kubernetes?
+Answer: Kubernetes is an open-source container orchestration system that automates the deployment, scaling, scheduling, and management of containerized applications across a cluster[cite: 3, 191].
+
+Question: What is Minikube?
+Answer: Minikube is a tool that runs a single-node Kubernetes cluster locally inside a virtual machine or container for development and testing[cite: 67, 69, 194].
+
+Question: What is a Kubernetes Pod?
+Answer: A Pod is the smallest deployable unit in Kubernetes, consisting of one or more co-located containers that share network and storage resources[cite: 5, 208, 209].
+
+Question: What is a Kubernetes Deployment?
+Answer: A Deployment is a declarative object in Kubernetes that manages stateless pods, ensuring a specified number of replicas remain running[cite: 117, 201, 217].
+
+Question: What is replica management in Kubernetes?
+Answer: Replica management maintains a desired count of running Pod instances, automatically replacing failed or deleted Pods to ensure application availability[cite: 208, 209, 210].
+
+Question: What is self-healing in Kubernetes?
+Answer: Self-healing is Kubernetes' ability to automatically restart, recreate, or reschedule failed containers or Pods to restore the desired state[cite: 208, 210].
+
+Question: What is a Kubernetes Service?
+Answer: A Kubernetes Service defines a logical set of Pods and a network policy to expose them as a unified network endpoint[cite: 84, 118, 201, 218].
+
+Question: What is a ClusterIP Service in Kubernetes?
+Answer: A ClusterIP is the default Kubernetes Service type that exposes an application on an IP address internal to the cluster[cite: 118].
+
+Question: What is a NodePort Service in Kubernetes?
+Answer: A NodePort Service exposes an application on a static port on each cluster node's IP address, allowing direct external access to the workload[cite: 118, 218, 220].
+
+Question: What is a Kubernetes ConfigMap?
+Answer: A ConfigMap is an object used to store non-confidential configuration key-value pairs as environment variables or files inside Pods[cite: 40, 201, 221].
+
+Question: What is a Kubernetes Secret?
+Answer: A Secret is an object designed to store sensitive configuration data—such as API keys, passwords, or tokens—separately from application code[cite: 40, 132, 201, 222].
+
+Question: Why are values in a Kubernetes Secret YAML encoded in Base64?
+Answer: Base64 encoding allows arbitrary data (including binary data and special characters) to be safely stored in YAML text configurations[cite: 222, 223].
+
+Question: What is a Persistent Volume (PV)?
+Answer: A Persistent Volume is cluster storage provisioned independently of Pod lifecycles, ensuring data persists even if Pods are deleted or recreated[cite: 5, 68, 80].
+
+Question: What is a Persistent Volume Claim (PVC)?
+Answer: A PVC is a request for persistent storage created by a user or Pod that dynamically binds to a matching Persistent Volume[cite: 71, 80, 93].
+
+Question: What is the difference between RWO and RWX access modes in Persistent Volumes?
+Answer: ReadWriteOnce (RWO) allows a volume to be mounted as read-write by a single node at a time, whereas ReadWriteMany (RWX) allows access by multiple nodes concurrently[cite: 93, 94].
+
+Question: What is a Kubernetes StatefulSet?
+Answer: A StatefulSet manages stateful applications, providing guaranteed unique network identifiers and persistent storage bindings across Pod restarts[cite: 67, 73, 74].
+
+Question: How does a StatefulSet differ from a Deployment?
+Answer: A Deployment manages interchangeable, stateless Pods, whereas a StatefulSet maintains sticky identities and designated persistent storage per individual Pod[cite: 69, 73, 74].
+
+Question: What is a Kubernetes Job?
+Answer: A Kubernetes Job runs batch tasks to completion (terminating upon success), making it ideal for tasks like model training or database migrations[cite: 4, 45, 62].
+
+Question: What is a Kubernetes InitContainer?
+Answer: An InitContainer is a specialized container that runs and completes before main application containers boot, useful for checking database dependencies or setting up permissions[cite: 52].
+
+Question: What is a Kubernetes ServiceAccount?
+Answer: A ServiceAccount provides an identity for processes running inside a Pod to authenticate with the Kubernetes API server[cite: 18, 50, 59].
+
+Question: What is Role-Based Access Control (RBAC) in Kubernetes?
+Answer: RBAC regulates permission levels within a cluster, allowing operators to grant Pods or users fine-grained access to read or modify specific Kubernetes resources[cite: 51, 58, 59].
+
+Question: What is kubectl?
+Answer: kubectl is the official command-line interface tool used to issue commands against Kubernetes API servers to manage cluster resources[cite: 50, 201].
+
+Question: What is an API endpoint?
+Answer: An API endpoint is a specific URL location where a server receives HTTP requests to create, retrieve, update, or delete resources[cite: 145, 146, 149].
+
+Question: What is FastAPI?
+Answer: FastAPI is a modern, high-performance Python web framework built for creating RESTful APIs with native data validation and asynchronous capabilities[cite: 38, 110, 144].
+
+Question: What is Uvicorn?
+Answer: Uvicorn is an ASGI web server implementation used to execute Python web applications like FastAPI[cite: 134, 148, 150].
+
+Question: What is Jinja2 in web development?
+Answer: Jinja2 is a templating engine for Python that dynamically injects data models into HTML documents to serve web interfaces[cite: 38, 161, 163].
+
+Question: What is boto3?
+Answer: boto3 is the official AWS SDK for Python, allowing developers to programmatically create, configure, and manage services like EC2 and S3[cite: 39, 274, 275].
+
+Question: What is vLLM?
+Answer: vLLM is an open-source, high-performance model serving engine designed to maximize throughput and GPU memory utilization when serving Large Language Models[cite: 12, 86, 88].
+
+Question: What is PagedAttention in vLLM?
+Answer: PagedAttention is a dynamic memory management technique that stores key-value (KV) attention caches in non-contiguous physical memory, drastically reducing memory fragmentation[cite: 12, 88].
+
+Question: What is KEDA in Kubernetes?
+Answer: KEDA (Kubernetes Event-driven Autoscaling) allows workloads to scale dynamically based on custom external metrics, such as message queues or request depth, rather than basic CPU/RAM utilization[cite: 12, 97, 99].
+
+Question: What is dynamic JSON schema enforcement in LLM serving?
+Answer: Schema enforcement uses guided decoding mechanisms during token generation to constrain model outputs strictly to valid, structured JSON[cite: 89, 90, 113].
+
+Question: What is the benefit of containerizing machine learning models?
+Answer: Containerization isolates model dependencies, framework versions, and runtime configurations, ensuring inference and training run identically across local workstations and cloud clusters[cite: 2, 17, 307].

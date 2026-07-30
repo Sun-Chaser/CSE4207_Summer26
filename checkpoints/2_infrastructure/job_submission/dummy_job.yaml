@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: dummy-job-
+  namespace: default
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 60
+  template:
+    metadata:
+      labels:
+        app: dummy-job
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: dummy-worker
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - echo "Dummy job completed successfully."
