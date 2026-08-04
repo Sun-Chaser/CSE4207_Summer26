@@ -47,7 +47,7 @@ def answer_questions(model, tokenizer):
 
         # Generate an answer using the model
         with torch.no_grad():
-            outputs = model.generate(**inputs, max_length=100)
+            outputs = model.generate(**inputs, max_length=256)
 
         # Decode the generated tokens to get the answer
         answer = clean_answer(tokenizer.decode(outputs[0], skip_special_tokens=True))
