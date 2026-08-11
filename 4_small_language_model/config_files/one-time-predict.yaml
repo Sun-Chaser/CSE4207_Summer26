@@ -1,3 +1,4 @@
+# Job template (One-time inference job)
 apiVersion: batch/v1
 kind: Job
 metadata:

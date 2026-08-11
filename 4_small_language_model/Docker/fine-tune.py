@@ -3,7 +3,6 @@ import argparse
 import os
 from pathlib import Path
 
-
 # Amazon S3
 import boto3
 from botocore.exceptions import ClientError
@@ -109,11 +108,12 @@ class TextFileDataset(Dataset):
 def normalize_s3_key(file_key):
     """
     Convert input into a clean S3 object key.
+    Not necessary if students know their file path
 
     Accepts:
     - train.csv
     - data/train.csv
-    - s3://cse4207-lab-rebuild/data/train.csv
+    - s3://BUCKET_NAME/data/train.csv
     """
     file_key = str(file_key)
 
@@ -132,10 +132,11 @@ def normalize_s3_key(file_key):
             )
 
         return object_key
-
+    
+    # Remove leading slashes
     return file_key.lstrip("/")
 
-
+# Cloud reading from S3 Bucket
 def read_from_s3(file_key):
     object_key = normalize_s3_key(file_key)
 
@@ -159,7 +160,7 @@ def read_from_s3(file_key):
 def get_data(dataset_location):
     return read_from_s3(dataset_location)
 
-
+# psycopg2 Database Connection and Logging
 def get_db_connection():
     return psycopg2.connect(
         host=os.getenv("DB_HOST", "slm-service"),
@@ -170,11 +171,12 @@ def get_db_connection():
         connect_timeout=5,
     )
 
-
+# Logging training events to Postgres
 def log_training_event(job_type, status, payload):
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
+                # Create table if not exists
                 cursor.execute(
                     """
                     CREATE TABLE IF NOT EXISTS training_logs (
@@ -186,6 +188,7 @@ def log_training_event(job_type, status, payload):
                     )
                     """
                 )
+                # Log information
                 cursor.execute(
                     """
                     INSERT INTO training_logs (job_type, status, payload)
@@ -196,18 +199,13 @@ def log_training_event(job_type, status, payload):
     except psycopg2.Error as error:
         print(f"Warning: Failed to log metrics to Postgres: {error}")
 
-
+# Do not change me
 def fine_tune_model(
-    train_file,
-    output_dir,
+    text,
     model_name="distilgpt2",
     epochs=1,
     learning_rate=5e-5,
 ):
-    train_file = Path(train_file)
-    output_dir = Path(output_dir)
-
-    text = get_data(train_file)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     tokenizer.pad_token = tokenizer.eos_token
@@ -269,12 +267,6 @@ def fine_tune_model(
             payload={"loss": round(avg_loss, 4), "epoch": epoch + 1},
         )
 
-    output_dir.mkdir(parents=True, exist_ok=True)
-    model.save_pretrained(output_dir)
-    tokenizer.save_pretrained(output_dir)
-
-    print(f"Fine-tuned model saved to: {output_dir}")
-
     log_training_event(
         job_type="fine-tune",
         status="completed",
@@ -283,6 +275,15 @@ def fine_tune_model(
             "epochs": epochs,
         },
     )
+
+    return model, tokenizer
+
+def save_model(model, tokenizer, output_dir):
+    output_dir.mkdir(parents=True, exist_ok=True)
+    model.save_pretrained(output_dir)
+    tokenizer.save_pretrained(output_dir)
+
+    print(f"Fine-tuned model saved to: {output_dir}")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -315,11 +316,17 @@ def main():
 
     args = parser.parse_args()
 
-    fine_tune_model(
-        train_file=args.dataset_location,
-        output_dir=args.model_storage_location,
+    train_file = Path(args.dataset_location)
+    output_dir = Path(args.model_storage_location)
+
+    train_data = get_data(train_file)
+
+    model, tokenizer = fine_tune_model(
+        text=train_data,
         epochs=args.epochs,
     )
+
+    save_model(model, tokenizer, output_dir)
 
 
 if __name__ == "__main__":

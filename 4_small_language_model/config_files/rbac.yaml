@@ -1,4 +1,4 @@
-# Identity used by the FastAPI pod that submits Kubernetes Jobs.
+# Service account associated with job submitter APP 
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -6,15 +6,14 @@ metadata:
   namespace: default
 
 ---
-# Grant only the operations used by app.py to create a Job, wait for its
-# completion, locate its Pods, and fetch their logs.
+# Role-Based Access Control (Specify the permission as needed)
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: slm-job-submitter
   namespace: default
 rules:
-  - apiGroups:
+  - apiGroups: # Batch group
       - batch
     resources:
       - jobs
@@ -23,8 +22,8 @@ rules:
       - get
   - apiGroups:
       - ""
-    resources:
-      - pods
+    resources: # Default group 
+      - pods 
     verbs:
       - list
   - apiGroups:
@@ -35,7 +34,7 @@ rules:
       - get
 
 ---
-# Attach the Role above to the dedicated ServiceAccount.
+# Role Binding (like IAM role to user)
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

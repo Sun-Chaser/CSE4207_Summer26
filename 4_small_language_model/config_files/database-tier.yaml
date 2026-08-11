@@ -1,15 +1,14 @@
-# CONFIG MAP
+# Config Map
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: slm-configmap
 data:
-  # Pro-tip: Since this is an internal database service, you don't need NodePort.
-  # Your Inference/Fine-tuning workers can find this database using "slm-service:5432"
+  # Other pods can find this database using "slm-service:5432"
   DB_PORT: "5432"
 
 ---
-# DATABASE SERVICE
+# Database Service (needed for StatefulSet to have a stable network identity)
 apiVersion: v1
 kind: Service
 metadata:
@@ -17,8 +16,6 @@ metadata:
   labels:
     app: slm-database
 spec:
-  # Changed from ClusterIP to None to make it a Headless Service.
-  # This is crucial for StatefulSets so K8s can give the pod a stable network name (slm-database-0)
   clusterIP: None
   ports:
     - port: 5432
@@ -27,7 +24,7 @@ spec:
     app: slm-database
 
 ---
-# STATEFUL SET
+# Database APP
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -45,12 +42,9 @@ spec:
       labels:
         app: slm-database
     spec:
-      securityContext:
-        runAsUser: 999  
-        fsGroup: 999    
       containers:
         - name: slm-database
-          image: jackyang01/sql:latest
+          image: postgres:16
           ports:
             - containerPort: 5432
           env:
@@ -60,7 +54,7 @@ spec:
           envFrom:
             - secretRef:
                 name: slm-secret
-            - configMapRef:   # Added this so your container actually reads the configmap data!
+            - configMapRef:
                 name: slm-configmap
           volumeMounts:
             - name: my-volume-slm

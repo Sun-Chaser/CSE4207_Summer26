@@ -1,3 +1,4 @@
+# Submitter APP Depolyment (Use #doc API for visualization)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,24 +21,26 @@ spec:
       containers:
         - name: app
           image: jackyang01/slm-api:latest
-          imagePullPolicy: Always
+          imagePullPolicy: Always # Always pull the latest image for development purposes (IfNotPresent may have caching issues)
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           env:
             - name: JOB_TEMPLATE_DIR
-              value: /app/job_templates
+              value: /app/job_templates # Path to the directory containing job templates (inside the container) Change this if Dockerfile is modified 
             - name: KUBERNETES_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: PYTHONUNBUFFERED
+            # Optional environment variables for job submission behavior
+            - name: PYTHONUNBUFFERED # For debug purposes, real-time logging output to "kubectl logs"
               value: "1"
-            - name: JOB_WAIT_TIMEOUT_SECONDS
+            - name: JOB_WAIT_TIMEOUT_SECONDS # Wait for job completion timeout in seconds (default: 30 seconds)
               value: "1800"
-            - name: JOB_POLL_INTERVAL_SECONDS
+            - name: JOB_POLL_INTERVAL_SECONDS # Polling interval for job status check in seconds (default: 10 seconds)
               value: "2"
+          # Optional health checks for the job submitter container
           readinessProbe:
             httpGet:
               path: /healthz
@@ -50,6 +53,7 @@ spec:
               port: http
             initialDelaySeconds: 10
             periodSeconds: 10
+          # Increase resource requests as needed (should be fine for small jobs)
           resources:
             requests:
               cpu: "100m"
@@ -59,6 +63,7 @@ spec:
               memory: "512Mi"
 
 ---
+# Submitter Service (Optional, for internal communication)
 apiVersion: v1
 kind: Service
 metadata:

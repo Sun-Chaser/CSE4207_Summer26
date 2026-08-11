@@ -12,6 +12,20 @@ from psycopg2.extras import Json
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
+# Read from PV
+def load_model(model_location):
+    model_path = Path(model_location)
+
+    if not model_path.exists() or not model_path.is_dir():
+        log_training_event(
+            job_type="prediction",
+            status="failed",
+            payload={"model_name": model_path.name, "error": "The specified model path does not exist or is not a directory."},
+        )
+        raise ValueError("Model not found.")
+
+    return AutoTokenizer.from_pretrained(model_path), AutoModelForCausalLM.from_pretrained(model_path)
+
 def get_db_connection():
     return psycopg2.connect(
         host=os.getenv("DB_HOST", "slm-service"),
@@ -50,20 +64,30 @@ def log_training_event(job_type, status, payload):
 def clean_answer(answer):
     return re.sub(r"\s+", " ", answer).strip()
 
-def answer_question(model_path):
-    model_name = model_path.name  # Use the folder name as the model name
-
-    # Load the fine-tuned model and tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
-    model = AutoModelForCausalLM.from_pretrained(model_path)
-
-    print(f"Model '{model_name}' loaded successfully. You can now ask questions.")
+def answer_question(model, model_path, tokenizer, question):
 
     # Set the model to evaluation mode
     model.eval()
 
-    num_questions_answered = 0  # Initialize the counter for answered questions
+    # Tokenize the input question
+    inputs = tokenizer(question, return_tensors="pt")
 
+    # Generate an answer using the model
+    with torch.no_grad():
+        outputs = model.generate(**inputs, max_length=256)
+
+    # Decode the generated tokens to get the answer
+    answer = clean_answer(tokenizer.decode(outputs[0], skip_special_tokens=True))
+    
+    print(f"Answer: {answer}")
+    log_training_event(
+        job_type="one-time-prediction",
+        status="completed",
+        payload={"model_name": model_path.name, "question": question, "answer": answer},
+    )
+
+def answer_questions(model, tokenizer, model_path):
+    num_questions_answered = 0  # Initialize the counter for answered questions
     while True:
         question = input("Enter your question (or type 'exit' to quit): ")
         if question.lower() == 'exit':
@@ -74,7 +98,7 @@ def answer_question(model_path):
 
         # Generate an answer using the model
         with torch.no_grad():
-            outputs = model.generate(**inputs, max_length=100)
+            outputs = model.generate(**inputs, max_length=256)
 
         # Decode the generated tokens to get the answer
         answer = clean_answer(tokenizer.decode(outputs[0], skip_special_tokens=True))
@@ -83,16 +107,15 @@ def answer_question(model_path):
         log_training_event(
             job_type="predict",
             status="running",
-            payload={"model_name": model_name, "question": question, "answer": answer},
+            payload={"model_name": model_path.name, "question": question, "answer": answer},
         )
         num_questions_answered += 1  # Increment the counter for answered questions
     
     log_training_event(
         job_type="predict",
         status="completed",
-        payload={"model_name": model_name, "number_of_questions_answered": num_questions_answered, "message": "Prediction session completed."},
+        payload={"model_name": model_path.name, "number_of_questions_answered": num_questions_answered, "message": "Prediction session completed."},
     )
-
 
 
 def main():
@@ -123,6 +146,32 @@ def main():
     print(f"Using model from: {model_path}")
     answer_question(model_path)
 
+def main():
+    parser = argparse.ArgumentParser(
+        description=(
+            "Fetch a fine-tuned Small Language Model and generate answers based on user input question."
+        )
+    )
+
+    parser.add_argument(
+        "--model_location",
+        required=True,
+        help="Path to the pre-trained and fine-tuned file folder.",
+    )
+
+    parser.add_argument(
+        "--question",
+        help="Question to ask the fine-tuned model.",
+    )
+
+    args = parser.parse_args()
+
+    tokenizer, model = load_model(args.model_location)
+
+    if args.question:
+        answer_question(model, args.model_location, tokenizer, args.question)
+    else:
+        answer_questions(model, args.model_location, tokenizer)
 
 if __name__ == "__main__":
     main()

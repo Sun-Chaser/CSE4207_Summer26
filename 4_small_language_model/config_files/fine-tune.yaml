@@ -1,3 +1,4 @@
+# Job template (Deterministic fine-tuning job)
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -26,7 +27,7 @@ spec:
                 name: slm-configmap
 
           env:
-            - name: PYTHONUNBUFFERED
+            - name: PYTHONUNBUFFERED # For debug purposes, real-time logging output to "kubectl logs"
               value: "1"
 
           volumeMounts:
