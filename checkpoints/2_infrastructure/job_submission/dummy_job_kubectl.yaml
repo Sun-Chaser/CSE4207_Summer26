@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dummy-job-kubectl
+  namespace: default
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: dummy-job
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: dummy-worker
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - echo "Dummy job completed successfully."
